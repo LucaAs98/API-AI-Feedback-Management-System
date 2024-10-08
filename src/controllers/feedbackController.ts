@@ -28,10 +28,17 @@ export const getAllFeedbacks = async (req: Request, res: Response): Promise<void
  */
 export const addFeedback = async (req: Request, res: Response): Promise<void> => {
   try {
+    const start = new Date().getTime();
+
     const analyzedFeedback = await analyzeFeedback(req.body.feedback_text);
+
+    const end = new Date().getTime();
+    const elapsedTime = end - start;
+
     const createFeedbackBody = {
       ...req.body,
       ...analyzedFeedback,
+      response_time: elapsedTime,
     };
 
     const response = await createFeedback(createFeedbackBody);

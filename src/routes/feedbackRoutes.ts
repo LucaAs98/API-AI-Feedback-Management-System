@@ -33,7 +33,7 @@ const router = express.Router();
  *                     format: date-time
  *                     example: "2024-10-08T12:34:56Z"
  *                   response_time:
- *                     type: string
+ *                     type: bigint
  *                     format: date-time
  *                     nullable: true
  *                     example: "2024-10-08T12:34:56Z"
@@ -131,7 +131,7 @@ router.get('/feedback', getAllFeedbacks); // Get all feedbacks
  *                   format: date-time
  *                   example: "2024-10-08T12:34:56Z"
  *                 response_time:
- *                   type: string
+ *                   type: bigint
  *                   format: date-time
  *                   nullable: true
  *                   example: null

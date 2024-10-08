@@ -12,7 +12,7 @@ model feedback {
   user_id        Int
   feedback_text  String
   feedback_time  DateTime? @default(now()) @db.Timestamp(6)
-  response_time  DateTime? @db.Timestamp(6)
+  response_time  Int?
   sentiment      String?   @db.VarChar(10)
   positive_score Float?
   negative_score Float?

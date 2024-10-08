@@ -4,8 +4,16 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import cors from 'cors';
-import { Client } from 'pg'; // Import PostgreSQL client
+import { Client } from 'pg';
 import dotenv from 'dotenv';
+
+//Routes
+import userRoutes from './routes/userRoutes';
+import feedbackRoutes from './routes/feedbackRoutes';
+
+//Swagger
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 dotenv.config(); // Load environment variables
 
@@ -47,9 +55,46 @@ app.use(bodyParser.json());
 // Start the database connection
 connectToDatabase();
 
+//Swagger init
+swaggerInit();
+
 // Create and start the server
 const server = http.createServer(app);
 
+// API Routes
+app.use(userRoutes);
+app.use(feedbackRoutes);
+
 server.listen(PORT, () => {
-  console.log('Server running on http://localhost:8080/');
+  console.log(
+    `- Server running on http://localhost:8080/ \n- API Documentation on http://localhost:8080/api-docs`
+  );
 });
+
+function swaggerInit() {
+  const swaggerOptions = {
+    swaggerDefinition: {
+      openapi: '3.0.0',
+      info: {
+        title: 'API Documentation',
+        version: '1.0.0',
+        description: 'API for My Application',
+      },
+      servers: [
+        {
+          url: 'http://localhost:8080',
+        },
+      ],
+    },
+    apis: ['./src/routes/*.ts'], // Path to your API routes
+  };
+
+  const swaggerDocs = swaggerJsDoc(swaggerOptions);
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+  // Add a new route to serve the OpenAPI JSON
+  app.get('/api-docs.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerDocs);
+  });
+}

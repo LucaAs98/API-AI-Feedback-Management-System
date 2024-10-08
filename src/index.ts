@@ -42,11 +42,23 @@ const connectToDatabase = async () => {
 };
 
 // Middleware
-app.use(
-  cors({
-    credentials: true,
-  })
-);
+const allowedOrigins = process.env.ALLOWED_ORIGINS || ([] as string[]);
+
+const corsOptions = {
+  origin: function (origin: any, callback: any) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, origin);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // Necessary to support credentials
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'Authorization'], // Ensure to include all necessary headers
+};
+
+app.use(cors(corsOptions));
 
 app.use(compression());
 app.use(cookieParser());
@@ -66,9 +78,7 @@ app.use(userRoutes);
 app.use(feedbackRoutes);
 
 server.listen(PORT, () => {
-  console.log(
-    `- Server running on http://localhost:8080/ \n- API Documentation on http://localhost:8080/api-docs`
-  );
+  console.log(`- Server running on http://localhost:8080/ \n- API Documentation on http://localhost:8080/api-docs`);
 });
 
 function swaggerInit() {

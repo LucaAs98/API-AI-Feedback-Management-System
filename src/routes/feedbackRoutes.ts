@@ -1,20 +1,17 @@
 import express from 'express';
-import {
-  getAllFeedbacks,
-  addFeedback,
-} from '../controllers/feedbackController';
+import { getAllFeedbacks, addFeedback } from '../controllers/feedbackController';
 
 const router = express.Router();
 
 /**
  * @swagger
- * /feedbacks:
+ * /feedback:
  *   get:
- *     summary: Retrieve all feedbacks
- *     tags: [Feedbacks]
+ *     summary: Get all feedbacks
+ *     description: Retrieve a list of all feedbacks submitted by users.
  *     responses:
- *       200:
- *         description: A list of feedback objects
+ *       '200':
+ *         description: A list of feedbacks
  *         content:
  *           application/json:
  *             schema:
@@ -30,29 +27,50 @@ const router = express.Router();
  *                     example: 123
  *                   feedback_text:
  *                     type: string
- *                     example: "Great service!"
- *                   response_text:
- *                     type: string
- *                     example: "Thank you for your feedback!"
+ *                     example: "This is a feedback message."
  *                   feedback_time:
  *                     type: string
  *                     format: date-time
- *                     example: "2023-10-08T12:34:56Z"
+ *                     example: "2024-10-08T12:34:56Z"
  *                   response_time:
  *                     type: string
  *                     format: date-time
- *                     example: "2023-10-09T14:22:33Z"
- *       500:
- *         description: Internal server error
+ *                     nullable: true
+ *                     example: "2024-10-08T12:34:56Z"
+ *                   sentiment:
+ *                     type: string
+ *                     enum: [POSITIVE, NEGATIVE, NEUTRAL, MIXED]
+ *                     nullable: true
+ *                     example: "POSITIVE"
+ *                   positive_score:
+ *                     type: number
+ *                     format: float
+ *                     nullable: true
+ *                     example: 0.9996839761734009
+ *                   negative_score:
+ *                     type: number
+ *                     format: float
+ *                     nullable: true
+ *                     example: 0.00005056627560406923
+ *                   neutral_score:
+ *                     type: number
+ *                     format: float
+ *                     nullable: true
+ *                     example: 0.000262411602307111
+ *                   mixed_score:
+ *                     type: number
+ *                     format: float
+ *                     nullable: true
+ *                     example: 0.000003055851038880064
  */
-router.get('/feedbacks', getAllFeedbacks); // Get all feedbacks
+router.get('/feedback', getAllFeedbacks); // Get all feedbacks
 
 /**
  * @swagger
- * /feedbacks:
+ * /feedback:
  *   post:
  *     summary: Create new feedback
- *     tags: [Feedbacks]
+ *     description: Submit a new feedback.
  *     requestBody:
  *       required: true
  *       content:
@@ -65,18 +83,88 @@ router.get('/feedbacks', getAllFeedbacks); // Get all feedbacks
  *                 example: 123
  *               feedback_text:
  *                 type: string
- *                 example: "Great service!"
- *               response_text:
+ *                 example: "This is a new feedback message."
+ *               sentiment:
  *                 type: string
- *                 example: "Thank you for your feedback!"
+ *                 enum: [POSITIVE, NEGATIVE, NEUTRAL, MIXED]
+ *                 nullable: true
+ *                 example: "POSITIVE"
+ *               positive_score:
+ *                 type: number
+ *                 format: float
+ *                 nullable: true
+ *                 example: 0.9996839761734009
+ *               negative_score:
+ *                 type: number
+ *                 format: float
+ *                 nullable: true
+ *                 example: 0.00005056627560406923
+ *               neutral_score:
+ *                 type: number
+ *                 format: float
+ *                 nullable: true
+ *                 example: 0.000262411602307111
+ *               mixed_score:
+ *                 type: number
+ *                 format: float
+ *                 nullable: true
+ *                 example: 0.000003055851038880064
  *     responses:
- *       201:
+ *       '201':
  *         description: Feedback created successfully
- *       400:
- *         description: Invalid input
- *       500:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   example: 1
+ *                 user_id:
+ *                   type: integer
+ *                   example: 123
+ *                 feedback_text:
+ *                   type: string
+ *                   example: "This is a new feedback message."
+ *                 feedback_time:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2024-10-08T12:34:56Z"
+ *                 response_time:
+ *                   type: string
+ *                   format: date-time
+ *                   nullable: true
+ *                   example: null
+ *                 sentiment:
+ *                   type: string
+ *                   enum: [POSITIVE, NEGATIVE, NEUTRAL, MIXED]
+ *                   nullable: true
+ *                   example: "POSITIVE"
+ *                 positive_score:
+ *                   type: number
+ *                   format: float
+ *                   nullable: true
+ *                   example: 0.9996839761734009
+ *                 negative_score:
+ *                   type: number
+ *                   format: float
+ *                   nullable: true
+ *                   example: 0.00005056627560406923
+ *                 neutral_score:
+ *                   type: number
+ *                   format: float
+ *                   nullable: true
+ *                   example: 0.000262411602307111
+ *                 mixed_score:
+ *                   type: number
+ *                   format: float
+ *                   nullable: true
+ *                   example: 0.000003055851038880064
+ *       '400':
+ *         description: Bad request
+ *       '500':
  *         description: Internal server error
  */
-router.post('/feedbacks', addFeedback); // Create new feedback
+router.post('/feedback', addFeedback); // Create new feedback
 
 export default router;

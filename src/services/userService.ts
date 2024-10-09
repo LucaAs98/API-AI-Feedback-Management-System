@@ -2,8 +2,14 @@ import { Prisma, PrismaClient, user as User } from '@prisma/client';
 import { getPrismaError } from '../utils/helpers';
 import bcrypt from 'bcrypt';
 
-// Initialize Prisma Client
-const prisma = new PrismaClient();
+type UserCreationInput = {
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+};
+
+const prisma = new PrismaClient(); // Initialize Prisma Client
 
 /**
  * Fetches all users from the database.
@@ -31,21 +37,16 @@ export const getUsers = async (): Promise<User[]> => {
 export const createUser = async (data: UserCreationInput): Promise<User> => {
   const { password, ...dataAux } = data; //Remove password field
   try {
+    //Create body for adding user, crypting the password
     const completeUser: Prisma.userCreateInput = {
       ...dataAux,
       password_hash: await bcrypt.hash(password, 10),
     };
+
     return await prisma.user.create({ data: completeUser });
   } catch (error) {
     const errorMessage = getPrismaError(error);
     console.error(errorMessage);
     throw new Error(errorMessage);
   }
-};
-
-type UserCreationInput = {
-  email: string;
-  password: string;
-  first_name: string;
-  last_name: string;
 };

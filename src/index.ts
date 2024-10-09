@@ -12,7 +12,7 @@ import userRoutes from './routes/userRoutes';
 import feedbackRoutes from './routes/feedbackRoutes';
 
 //Swagger
-import swaggerJsDoc from 'swagger-jsdoc';
+import yaml from 'yamljs';
 import swaggerUi from 'swagger-ui-express';
 
 dotenv.config(); // Load environment variables
@@ -41,24 +41,8 @@ const connectToDatabase = async () => {
   }
 };
 
-// Middleware
-const allowedOrigins = process.env.ALLOWED_ORIGINS || ([] as string[]);
-
-const corsOptions = {
-  origin: function (origin: any, callback: any) {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, origin);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true, // Necessary to support credentials
-  optionsSuccessStatus: 204,
-  allowedHeaders: ['Content-Type', 'Authorization'], // Ensure to include all necessary headers
-};
-
-app.use(cors(corsOptions));
+// CORS
+initCORS();
 
 app.use(compression());
 app.use(cookieParser());
@@ -81,30 +65,44 @@ server.listen(PORT, () => {
   console.log(`- Server running on http://localhost:8080/ \n- API Documentation on http://localhost:8080/api-docs`);
 });
 
+/** Initializes Swagger documentation for the API. */
 function swaggerInit() {
-  const swaggerOptions = {
-    swaggerDefinition: {
-      openapi: '3.0.0',
-      info: {
-        title: 'API Documentation',
-        version: '1.0.0',
-        description: 'API for My Application',
-      },
-      servers: [
-        {
-          url: 'http://localhost:8080',
-        },
-      ],
-    },
-    apis: ['./src/routes/*.ts'], // Path to your API routes
-  };
+  // Loads the OpenAPI specifications from a YAML file
+  const swaggerDocs = yaml.load('./src/swagger.yaml');
 
-  const swaggerDocs = swaggerJsDoc(swaggerOptions);
+  //Sets up the Swagger UI to serve the API documentation at the '/api-docs' route
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-  // Add a new route to serve the OpenAPI JSON
+  // Creates an endpoint to serve the OpenAPI JSON at '/api-docs.json'
   app.get('/api-docs.json', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerDocs);
   });
+}
+
+/**
+ * Initializes CORS (Cross-Origin Resource Sharing) for the API.
+ *
+ * This function configures CORS settings to specify which origins are allowed
+ * to access the API. It supports various HTTP methods and includes necessary
+ * headers for authorization and content type.
+ */
+function initCORS() {
+  const allowedOrigins = process.env.ALLOWED_ORIGINS || ([] as string[]);
+
+  const corsOptions = {
+    origin: function (origin: any, callback: any) {
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        callback(null, origin);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Necessary to support credentials
+    optionsSuccessStatus: 204,
+    allowedHeaders: ['Content-Type', 'Authorization'], // Ensure to include all necessary headers
+  };
+
+  app.use(cors(corsOptions));
 }

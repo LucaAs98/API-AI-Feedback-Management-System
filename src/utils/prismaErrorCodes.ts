@@ -2,8 +2,7 @@ export const errorMessages: { [key: string]: string } = {
   P2000: 'The string is too short or too long for the specified field.',
   P2001: 'The record to update does not exist.',
   P2002: 'Unique constraint violation. Check your data.',
-  P2003:
-    'Foreign key constraint violation. Check the ID of the related object.',
+  P2003: 'Foreign key constraint violation. Check the ID of the related object.',
   P2004: 'The record to delete does not exist.',
   P2005: 'The data type does not match.',
   P2006: 'The record is not unique.',

@@ -10,8 +10,7 @@ type AnalyzedFeedback = {
   mixed_score: number;
 };
 
-// Initialize Prisma Client
-const prisma = new PrismaClient();
+const prisma = new PrismaClient(); // Initialize Prisma Client
 
 /**
  * Retrieves all feedback entries from the database.
@@ -52,17 +51,15 @@ export const createFeedback = async (data: Prisma.feedbackCreateInput): Promise<
  * @returns A promise that resolves to the sentiment analysis result.
  */
 export const analyzeFeedback = async (feedback: string): Promise<AnalyzedFeedback> => {
-  // Define the API URL for the AWS endpoint
   const apiUrl = 'https://ducf7s8m8j.execute-api.us-east-1.amazonaws.com/develop/feedback';
 
   try {
-    // Send a POST request to the API with the feedback as the request body
+    // Send a POST request to the AWS Lambda with the feedback as the request body
     const response = await axios.post(apiUrl, { feedback });
 
     // Check if the response is successful and contains sentiment data
     if (response.status === 200 && response.data) {
-      // Extract the sentiment result from the response data
-      const resultList = response.data.ResultList[0];
+      const resultList = response.data.ResultList[0]; // Extract the sentiment result from the response data
 
       // Return the sentiment analysis result
       return {
@@ -77,9 +74,7 @@ export const analyzeFeedback = async (feedback: string): Promise<AnalyzedFeedbac
       throw new Error('No sentiment data found in the response.');
     }
   } catch (error) {
-    // Log the error for debugging purposes
     console.error('Error while analyzing the feedback:', error);
-    // Throw a new error to handle it in the calling function
-    throw new Error('Error while analyzing the feedback.'); // Customize this message as needed
+    throw new Error('Error while analyzing the feedback.');
   }
 };

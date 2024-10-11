@@ -216,132 +216,387 @@ paths:
           description: Invalid input
         500:
           description: Internal server error
+  /product:
+    post:
+      summary: Create a new product
+      description: Creates a new product in the database, which can be of type Film, Book, or Music. The product is created within a transaction to ensure data integrity.
+      operationId: createProduct
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ProductCreationInput' # Common product fields
+                - oneOf: # Specific fields based on product type
+                    - $ref: '#/components/schemas/FilmCreationInput'
+                    - $ref: '#/components/schemas/BookCreationInput'
+                    - $ref: '#/components/schemas/MusicCreationInput'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Product'
+                  - oneOf:
+                      - $ref: '#/components/schemas/Film'
+                      - $ref: '#/components/schemas/Book'
+                      - $ref: '#/components/schemas/Music'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Invalid product type'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Error message from Prisma'
+  /product/id/{id}:
+    get:
+      summary: Retrieves a product by its ID
+      description: |
+        This endpoint allows you to fetch a product based on its unique identifier. 
+        The response will include all relevant details of the product, including feedbacks and associated data for films, books, or music.
+      operationId: getProductById
+      tags:
+        - Products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the product to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully retrieved the product.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: An error occurred while retrieving the product.
+  /product/type/{type}:
+    get:
+      summary: Retrieves products by their type
+      description: |
+        This endpoint allows you to fetch a list of products based on their type. 
+        The response will include relevant details for each product, including feedbacks and associated data for films, books, or music.
+      operationId: getProductsByType
+      tags:
+        - Products
+      parameters:
+        - name: type
+          in: path
+          required: true
+          description: The type of products to retrieve (e.g., films, books, music).
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved the products.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '404':
+          description: No products found for the specified type.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No products found for the specified type.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: An error occurred while retrieving the products.
 
 components:
   schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: 'Inception'
+        image:
+          type: string
+          example: 'http://example.com/images/inception.jpg'
+        type:
+          type: string
+          enum: [FILM, BOOK, MUSIC]
+          example: 'FILM'
+        genre_category:
+          type: string
+          example: 'Sci-Fi'
+        feedbacks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feedback'
+
+    Film:
+      type: object
+      properties:
+        product_id:
+          type: integer
+          example: 1
+        director:
+          type: string
+          example: 'Christopher Nolan'
+        duration:
+          type: integer
+          example: 148
+        description:
+          type: string
+          example: 'A thief who steals corporate secrets through the use of dream-sharing technology.'
+
+    Book:
+      type: object
+      properties:
+        product_id:
+          type: integer
+          example: 2
+        publisher:
+          type: string
+          example: 'Penguin Random House'
+        author:
+          type: string
+          example: 'George Orwell'
+        isbn:
+          type: string
+          example: '978-0451524935'
+        description:
+          type: string
+          example: 'A dystopian social science fiction novel and cautionary tale.'
+
+    Music:
+      type: object
+      properties:
+        product_id:
+          type: integer
+          example: 3
+        producer:
+          type: string
+          example: 'Quincy Jones'
+        artist:
+          type: string
+          example: 'Michael Jackson'
+        duration:
+          type: integer
+          example: 258
+
     Feedback:
       type: object
       properties:
         id:
           type: integer
-          description: Unique identifier for the feedback
           example: 1
         user_id:
           type: integer
-          description: ID of the user who submitted the feedback
-          example: 123
+          example: 1
+        product_id:
+          type: integer
+          example: 1
         feedback_text:
           type: string
-          description: The feedback text submitted by the user
-          example: 'This is a feedback message.'
+          example: 'An incredible movie with stunning visuals.'
         feedback_time:
           type: string
           format: date-time
-          description: Timestamp when the feedback was submitted
-          example: '2024-10-08T12:34:56Z'
+          example: '2024-10-10T14:48:00.000Z'
         response_time:
           type: integer
-          nullable: true
-          description: Time taken to respond to the feedback (in seconds) (optional)
-          example: 120
+          example: 5
         sentiment:
           type: string
-          nullable: true
-          description: Sentiment analysis result of the feedback (optional)
-          enum: [POSITIVE, NEGATIVE, NEUTRAL, MIXED]
-          example: 'POSITIVE'
+          maxLength: 10
+          example: 'positive'
         positive_score:
           type: number
           format: float
-          nullable: true
-          description: Confidence score for positive sentiment (optional)
-          example: 0.9996839761734009
+          example: 0.85
         negative_score:
           type: number
           format: float
-          nullable: true
-          description: Confidence score for negative sentiment (optional)
-          example: 0.00005056627560406923
+          example: 0.05
         neutral_score:
           type: number
           format: float
-          nullable: true
-          description: Confidence score for neutral sentiment (optional)
-          example: 0.000262411602307111
+          example: 0.10
         mixed_score:
           type: number
           format: float
-          nullable: true
-          description: Confidence score for mixed sentiment (optional)
-          example: 0.000003055851038880064
-        user:
-          $ref: '#/components/schemas/User'
-          description: Reference to the user who provided the feedback
+          example: 0.02
+
     User:
       type: object
       properties:
         id:
           type: integer
-          description: Unique identifier for the user
           example: 1
         email:
           type: string
-          format: email
-          description: User's email address
           example: 'user@example.com'
         password_hash:
           type: string
-          description: Hashed password for the user
-          example: '$2b$10$8sGzIqerUAOiF59QFZZ2Be3jK9wsltZKtNB2bqL7UEK3OWgjjiD3y'
+          example: '$2b$10$EIX5Z4Iuj5zPzVdHmkEp.eHJ4KmB.6IYP1SBSz7f25OZQs3WwEdKq' # Example of a hashed password
         first_name:
           type: string
-          description: First name of the user
           example: 'John'
         last_name:
           type: string
-          description: Last name of the user
           example: 'Doe'
         birth_date:
           type: string
           format: date
-          description: User's birth date (optional)
           example: '1990-01-01'
         phone:
           type: string
-          description: User's phone number (optional)
-          example: '+1234567890'
+          example: '+123456789'
         profile_picture:
           type: string
-          description: URL to the user's profile picture (optional)
-          example: 'https://example.com/images/profile.jpg'
+          example: 'http://example.com/images/profile.jpg'
         content_preferences:
           type: string
-          description: User's content preferences (optional)
-          example: 'sports,technology'
+          example: 'Sci-Fi, Mystery'
         account_status:
           type: string
-          description: Status of the user account (active/inactive)
           example: 'active'
         registration_date:
           type: string
           format: date-time
-          description: Date when the user registered
-          example: '2024-01-01T12:34:56Z'
+          example: '2024-01-01T12:00:00Z'
         last_access:
           type: string
           format: date-time
-          description: Last time the user accessed the system
-          example: '2024-10-08T12:34:56Z'
+          example: '2024-10-10T14:48:00Z'
         two_factor_enabled:
           type: boolean
-          description: Whether two-factor authentication is enabled
           example: false
         password_reset_token:
           type: string
-          description: Token for resetting the user's password (optional)
-          example: 'e3a1d4f9-49a4-4c88-82e3-1c5b5d57c3b5'
+          example: 'randomtoken123'
         feedback:
           type: array
-          description: List of feedbacks submitted by the user
           items:
             $ref: '#/components/schemas/Feedback'
+
+    ProductCreationInput:
+      type: object
+      properties:
+        title:
+          type: string
+          description: 'The title of the product.'
+          example: 'Inception'
+        image:
+          type: string
+          description: 'URL or path to the cover image of the product.'
+          example: 'https://example.com/images/inception.jpg'
+        type:
+          type: string
+          enum: [FILM, BOOK, MUSIC]
+          description: 'The type of the product.'
+          example: 'FILM'
+        genre_category:
+          type: string
+          description: 'The genre or category of the product.'
+          example: 'Science Fiction'
+
+    FilmCreationInput:
+      type: object
+      properties:
+        director:
+          type: string
+          description: The director of the film
+          example: 'Christopher Nolan'
+        duration:
+          type: integer
+          description: The duration of the film in minutes
+          example: 148
+        description:
+          type: string
+          description: A brief description of the film
+          example: 'A mind-bending thriller about dream invasion.'
+
+    BookCreationInput:
+      type: object
+      properties:
+        publisher:
+          type: string
+          description: The publisher of the book
+          example: 'Penguin Random House'
+        author:
+          type: string
+          description: The author of the book
+          example: 'George Orwell'
+        isbn:
+          type: string
+          description: The ISBN of the book
+          example: '978-0451524935'
+        description:
+          type: string
+          description: A brief description of the book
+          example: 'A dystopian novel set in a totalitarian regime.'
+
+    MusicCreationInput:
+      type: object
+      properties:
+        producer:
+          type: string
+          description: The producer of the music
+          example: 'Quincy Jones'
+        artist:
+          type: string
+          description: The artist of the music
+          example: 'Michael Jackson'
+        duration:
+          type: integer
+          description: The total duration of the track in minutes
+          example: 4

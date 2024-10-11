@@ -10,6 +10,7 @@ import dotenv from 'dotenv';
 //Routes
 import userRoutes from './routes/userRoutes';
 import feedbackRoutes from './routes/feedbackRoutes';
+import productRoutes from './routes/productRoutes';
 
 //Swagger
 import yaml from 'yamljs';
@@ -60,6 +61,7 @@ const server = http.createServer(app);
 // API Routes
 app.use(userRoutes);
 app.use(feedbackRoutes);
+app.use(productRoutes);
 
 server.listen(PORT, () => {
   console.log(`- Server running on http://localhost:8080/ \n- API Documentation on http://localhost:8080/api-docs`);

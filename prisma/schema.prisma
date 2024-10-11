@@ -15,8 +15,8 @@ enum ProductType {
 
 model product {
   id             Int         @id @default(autoincrement()) // Primary key for the product table
-  title          String      @db.VarChar(255) // The title of the product
-  image          String      @db.VarChar(255) // Path to the cover image
+  title          String      @db.VarChar(100) // The title of the product
+  image          String      @db.VarChar(100) // Path to the cover image
   type           ProductType // Type of product (Film, Book, Music)
   genre_category String      @db.VarChar(255) // Category for genre or product type
   feedbacks      feedback[] // Feedback related to the product
@@ -27,19 +27,21 @@ model product {
 }
 
 model film {
-  product_id Int    @id // Foreign key referencing the product, also the primary key
-  director   String @db.VarChar(100) // Director of the film
-  duration   Int // Duration of the film in minutes
+  product_id  Int    @id // Foreign key referencing the product, also the primary key
+  director    String @db.VarChar(100) // Director of the film
+  duration    Int // Duration of the film in minutes
+  description String @db.VarChar(255) // Path to the cover image
 
   // Relationship with `product`
   product product @relation(fields: [product_id], references: [id], onDelete: Cascade) // Foreign key relationship
 }
 
 model book {
-  product_id Int    @id // Foreign key referencing the product, also the primary key
-  publisher  String @db.VarChar(100) // Publisher of the book
-  author     String @db.VarChar(100) // Author of the book
-  isbn       String @db.VarChar(20) // ISBN of the book
+  product_id  Int    @id // Foreign key referencing the product, also the primary key
+  publisher   String @db.VarChar(100) // Publisher of the book
+  author      String @db.VarChar(100) // Author of the book
+  isbn        String @db.VarChar(20) // ISBN of the book
+  description String @db.VarChar(255) // Path to the cover image
 
   // Relationship with `product`
   product product @relation(fields: [product_id], references: [id], onDelete: Cascade) // Foreign key relationship

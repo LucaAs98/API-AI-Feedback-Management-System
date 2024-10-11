@@ -7,35 +7,84 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model feedback {
-  id             Int       @id @default(autoincrement())
-  user_id        Int
-  feedback_text  String
-  feedback_time  DateTime? @default(now()) @db.Timestamp(6)
-  response_time  Int?
-  sentiment      String?   @db.VarChar(10)
-  positive_score Float?
-  negative_score Float?
-  neutral_score  Float?
-  mixed_score    Float?
-  user           user      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+enum ProductType {
+  FILM
+  BOOK
+  MUSIC
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model product {
+  id             Int         @id @default(autoincrement()) // Primary key for the product table
+  title          String      @db.VarChar(255) // The title of the product
+  image          String      @db.VarChar(255) // Path to the cover image
+  type           ProductType // Type of product (Film, Book, Music)
+  genre_category String      @db.VarChar(255) // Category for genre or product type
+  feedbacks      feedback[] // Feedback related to the product
+  // Automatically generated relation fields
+  film           film? // Optional relationship with the film model
+  book           book? // Optional relationship with the book model
+  music          music? // Optional relationship with the music model
+}
+
+model film {
+  product_id Int    @id // Foreign key referencing the product, also the primary key
+  director   String @db.VarChar(100) // Director of the film
+  duration   Int // Duration of the film in minutes
+
+  // Relationship with `product`
+  product product @relation(fields: [product_id], references: [id], onDelete: Cascade) // Foreign key relationship
+}
+
+model book {
+  product_id Int    @id // Foreign key referencing the product, also the primary key
+  publisher  String @db.VarChar(100) // Publisher of the book
+  author     String @db.VarChar(100) // Author of the book
+  isbn       String @db.VarChar(20) // ISBN of the book
+
+  // Relationship with `product`
+  product product @relation(fields: [product_id], references: [id], onDelete: Cascade) // Foreign key relationship
+}
+
+model music {
+  product_id Int    @id // Foreign key referencing the product, also the primary key
+  producer   String @db.VarChar(100) // Music producer
+  artist     String @db.VarChar(100) // Artist or musical group
+  duration   Int // Total duration of track in minutes
+
+  // Relationship with `product`
+  product product @relation(fields: [product_id], references: [id], onDelete: Cascade) // Foreign key relationship
+}
+
+model feedback {
+  id             Int       @id @default(autoincrement()) // Primary key for feedback
+  user_id        Int // Foreign key referencing the user
+  product_id     Int // Foreign key referencing the product
+  feedback_text  String // The text of the feedback
+  feedback_time  DateTime? @default(now()) @db.Timestamp(6) // Time the feedback was given
+  response_time  Int? // Time taken to respond to the feedback
+  sentiment      String?   @db.VarChar(10) // Sentiment analysis result
+  positive_score Float? // Positive score from sentiment analysis
+  negative_score Float? // Negative score from sentiment analysis
+  neutral_score  Float? // Neutral score from sentiment analysis
+  mixed_score    Float? // Mixed score from sentiment analysis
+  user           user      @relation(fields: [user_id], references: [id], onDelete: Cascade) // Relationship with user
+  product        product   @relation(fields: [product_id], references: [id], onDelete: Cascade) // Relationship with product
+}
+
 model user {
-  id                   Int        @id(map: "users_pkey") @default(autoincrement())
-  email                String     @unique(map: "users_email_key") @db.VarChar(255)
-  password_hash        String     @db.VarChar(255)
-  first_name           String     @db.VarChar(100)
-  last_name            String     @db.VarChar(100)
-  birth_date           DateTime?  @db.Date
-  phone                String?    @db.VarChar(15)
-  profile_picture      String?    @db.VarChar(255)
-  content_preferences  String?
-  account_status       String?    @default("active") @db.VarChar(10)
-  registration_date    DateTime?  @default(now()) @db.Timestamp(6)
-  last_access          DateTime?  @db.Timestamp(6)
-  two_factor_enabled   Boolean?   @default(false)
-  password_reset_token String?    @db.VarChar(255)
-  feedback             feedback[]
+  id                   Int        @id(map: "users_pkey") @default(autoincrement()) // Primary key for user
+  email                String     @unique(map: "users_email_key") @db.VarChar(255) // User's email address
+  password_hash        String     @db.VarChar(255) // Hash of the user's password
+  first_name           String     @db.VarChar(100) // User's first name
+  last_name            String     @db.VarChar(100) // User's last name
+  birth_date           DateTime?  @db.Date // User's birth date
+  phone                String?    @db.VarChar(15) // User's phone number
+  profile_picture      String?    @db.VarChar(255) // Path to the user's profile picture
+  content_preferences  String? // User's content preferences
+  account_status       String?    @default("active") @db.VarChar(10) // Status of the user's account
+  registration_date    DateTime?  @default(now()) @db.Timestamp(6) // User registration date
+  last_access          DateTime?  @db.Timestamp(6) // Last access date of the user
+  two_factor_enabled   Boolean?   @default(false) // Two-factor authentication enabled
+  password_reset_token String?    @db.VarChar(255) // Token for password reset
+  feedback             feedback[] // User's feedback
 }

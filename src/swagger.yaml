@@ -354,7 +354,387 @@ paths:
                   message:
                     type: string
                     example: An error occurred while retrieving the products.
-
+  /utils/create-base-db:
+    post:
+      tags: [Utils]
+      summary: Create new products in the database.
+      description: This endpoint allows creating new entries for products such as films, books, and music in the database.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    oneOf:
+                      - $ref: '#/components/schemas/FilmCreationInput'
+                      - $ref: '#/components/schemas/BookCreationInput'
+                      - $ref: '#/components/schemas/MusicCreationInput'
+              example:
+                products:
+                  - title: 'The Shawshank Redemption'
+                    image: 'shawshank.jpg'
+                    type: 'FILM'
+                    genre_category: 'Drama'
+                    director: 'Frank Darabont'
+                    duration: 142
+                    description: 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.'
+                  - title: 'Inception'
+                    image: 'inception.jpg'
+                    type: 'FILM'
+                    genre_category: 'Science Fiction'
+                    director: 'Christopher Nolan'
+                    duration: 148
+                    description: 'A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.'
+                  - title: 'The Godfather'
+                    image: 'godfather.jpg'
+                    type: 'FILM'
+                    genre_category: 'Crime'
+                    director: 'Francis Ford Coppola'
+                    duration: 175
+                    description: 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.'
+                  - title: 'Parasite'
+                    image: 'parasite.jpg'
+                    type: 'FILM'
+                    genre_category: 'Thriller'
+                    director: 'Bong Joon Ho'
+                    duration: 132
+                    description: 'Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.'
+                  - title: 'The Dark Knight'
+                    image: 'dark-knight.jpg'
+                    type: 'FILM'
+                    genre_category: 'Action'
+                    director: 'Christopher Nolan'
+                    duration: 152
+                    description: 'Batman sets out to dismantle the remaining criminal organizations in Gotham, but finds himself up against the Joker, a criminal mastermind.'
+                  - title: 'Pulp Fiction'
+                    image: 'pulp-fiction.jpg'
+                    type: 'FILM'
+                    genre_category: 'Crime'
+                    director: 'Quentin Tarantino'
+                    duration: 154
+                    description: "The lives of two mob hitmen, a boxer, a gangster's wife, and a pair of diner bandits intertwine in a series of tales of violence and redemption."
+                  - title: 'Thriller'
+                    image: 'thriller.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'Pop'
+                    producer: 'Quincy Jones'
+                    artist: 'Michael Jackson'
+                    duration: 42
+                    description: "The best-selling album of all time featuring hit songs like 'Billie Jean' and 'Beat It'."
+                  - title: 'Abbey Road'
+                    image: 'abbey-road.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'Rock'
+                    producer: 'George Martin'
+                    artist: 'The Beatles'
+                    duration: 47
+                    description: "The final studio album recorded by The Beatles, featuring iconic tracks like 'Come Together' and 'Here Comes the Sun'."
+                  - title: 'Back in Black'
+                    image: 'back-in-black.png'
+                    type: 'MUSIC'
+                    genre_category: 'Rock'
+                    producer: "Robert John 'Mutt' Lange"
+                    artist: 'AC/DC'
+                    duration: 42
+                    description: "One of the best-selling albums of all time, known for its hard-hitting rock anthems like 'Hells Bells' and 'You Shook Me All Night Long'."
+                  - title: 'Lemonade'
+                    image: 'lemonade.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'R&B'
+                    producer: 'Beyoncé'
+                    artist: 'Beyoncé'
+                    duration: 46
+                    description: 'A visual album that explores themes of infidelity, empowerment, and the experiences of Black women in America.'
+                  - title: 'The Wall'
+                    image: 'the-wall.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'Progressive Rock'
+                    producer: 'Bob Ezrin'
+                    artist: 'Pink Floyd'
+                    duration: 81
+                    description: "A concept album that tells the story of a rock star's breakdown and isolation."
+                  - title: 'To Kill a Mockingbird'
+                    image: 'to-kill-a-mockingbird.jpg'
+                    type: 'BOOK'
+                    genre_category: 'Fiction'
+                    publisher: 'J.B. Lippincott & Co.'
+                    author: 'Harper Lee'
+                    isbn: '978-0061120084'
+                    description: 'A novel about the serious issues of rape and racial inequality, told through the eyes of a young girl.'
+                  - title: '1984'
+                    image: '1984.jpg'
+                    type: 'BOOK'
+                    genre_category: 'Dystopian'
+                    publisher: 'Secker & Warburg'
+                    author: 'George Orwell'
+                    isbn: '978-0451524935'
+                    description: 'A dystopian novel set in a totalitarian society ruled by Big Brother, where surveillance and mind control are ubiquitous.'
+                  - title: 'The Great Gatsby'
+                    image: 'great-gatsby.jpg'
+                    type: 'BOOK'
+                    genre_category: 'Fiction'
+                    publisher: "Charles Scribner's Sons"
+                    author: 'F. Scott Fitzgerald'
+                    isbn: '978-0743273565'
+                    description: 'A classic American novel that explores themes of wealth, love, and the American Dream in the Jazz Age.'
+                  - title: 'The Catcher in the Rye'
+                    image: 'catcher-in-the-rye.jpg'
+                    type: 'BOOK'
+                    genre_category: 'Fiction'
+                    publisher: 'Little, Brown and Company'
+                    author: 'J.D. Salinger'
+                    isbn: '978-0316769488'
+                    description: 'A novel that explores the challenges of teenage angst and alienation through the eyes of the rebellious Holden Caulfield.'
+                  - title: 'The Alchemist'
+                    image: 'the-alchemist.jpg'
+                    type: 'BOOK'
+                    genre_category: 'Adventure'
+                    publisher: 'HarperOne'
+                    author: 'Paulo Coelho'
+                    isbn: '978-0062315007'
+                    description: 'A journey of self-discovery about a shepherd boy named Santiago who dreams of finding a treasure beyond his wildest dreams.'
+                  - title: "Sgt. Pepper's Lonely Hearts Club Band"
+                    image: 'sgt-pepper.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'Rock'
+                    producer: 'George Martin'
+                    artist: 'The Beatles'
+                    duration: 40
+                    description: 'An innovative concept album that redefined rock music, featuring tracks like "Lucy in the Sky with Diamonds" and "A Day in the Life".'
+                  - title: 'Kind of Blue'
+                    image: 'kind-of-blue.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'Jazz'
+                    producer: 'Teo Macero'
+                    artist: 'Miles Davis'
+                    duration: 45
+                    description: 'A landmark jazz album that has influenced generations of musicians, known for its cool, melodic style.'
+                  - title: 'Moby-Dick'
+                    image: 'moby-dick.jpg'
+                    type: 'BOOK'
+                    genre_category: 'Adventure'
+                    publisher: 'Harper & Brothers'
+                    author: 'Herman Melville'
+                    isbn: '978-1503280786'
+                    description: 'A tale of obsession and revenge as Captain Ahab pursues the great white whale, Moby Dick.'
+                  - title: 'Brave New World'
+                    image: 'brave-new-world.jpg'
+                    type: 'BOOK'
+                    genre_category: 'Dystopian'
+                    publisher: 'Chatto & Windus'
+                    author: 'Aldous Huxley'
+                    isbn: '978-0060850524'
+                    description: 'A futuristic society where citizens are conditioned to accept their roles, and individuality is suppressed.'
+                  - title: 'The Matrix'
+                    image: 'matrix.jpg'
+                    type: 'FILM'
+                    genre_category: 'Science Fiction'
+                    director: 'Lana Wachowski, Lilly Wachowski'
+                    duration: 136
+                    description: 'A hacker discovers the reality he knows is a simulated reality, and joins a rebellion against the machines.'
+                  - title: 'Gladiator'
+                    image: 'gladiator.jpg'
+                    type: 'FILM'
+                    genre_category: 'Action'
+                    director: 'Ridley Scott'
+                    duration: 155
+                    description: 'A former Roman General sets out to seek revenge against the corrupt emperor who murdered his family and sent him into slavery.'
+                  - title: 'La La Land'
+                    image: 'la-la-land.jpg'
+                    type: 'FILM'
+                    genre_category: 'Musical'
+                    director: 'Damien Chazelle'
+                    duration: 128
+                    description: 'A jazz musician and an aspiring actress fall in love while pursuing their dreams in Los Angeles.'
+                  - title: 'The Lord of the Rings: The Fellowship of the Ring'
+                    image: 'lotr-fellowship.jpg'
+                    type: 'FILM'
+                    genre_category: 'Fantasy'
+                    director: 'Peter Jackson'
+                    duration: 178
+                    description: 'A meek hobbit and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth.'
+                  - title: 'Good Kid, M.A.A.D City'
+                    image: 'good-kid-maad-city.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'Hip-Hop'
+                    producer: 'Dr. Dre'
+                    artist: 'Kendrick Lamar'
+                    duration: 68
+                    description: 'A concept album that portrays the life of a young man growing up in Compton, California.'
+                  - title: 'Rumours'
+                    image: 'rumours.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'Rock'
+                    producer: 'Fleetwood Mac'
+                    artist: 'Fleetwood Mac'
+                    duration: 39
+                    description: 'A classic album filled with personal turmoil and raw emotion, featuring hits like "Dreams" and "Go Your Own Way".'
+                  - title: 'DAMN.'
+                    image: 'damn.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'Hip-Hop'
+                    producer: 'Kendrick Lamar'
+                    artist: 'Kendrick Lamar'
+                    duration: 55
+                    description: 'A Pulitzer Prize-winning album that explores themes of identity, spirituality, and social issues.'
+                  - title: 'Random Access Memories'
+                    image: 'random-access-memories.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'Electronic'
+                    producer: 'Daft Punk'
+                    artist: 'Daft Punk'
+                    duration: 74
+                    description: 'An homage to 1970s and 1980s disco, featuring the hit single "Get Lucky" with Pharrell Williams.'
+                  - title: 'The Hobbit'
+                    image: 'the-hobbit.jpg'
+                    type: 'BOOK'
+                    genre_category: 'Fantasy'
+                    publisher: 'George Allen & Unwin'
+                    author: 'J.R.R. Tolkien'
+                    isbn: '978-0547928227'
+                    description: 'A fantasy novel that follows the quest of home-loving Bilbo Baggins to win a share of treasure guarded by a dragon.'
+                  - title: 'The Road'
+                    image: 'the-road.jpg'
+                    type: 'BOOK'
+                    genre_category: 'Post-Apocalyptic'
+                    publisher: 'Alfred A. Knopf'
+                    author: 'Cormac McCarthy'
+                    isbn: '978-0307387899'
+                    description: 'A father and son journey through a scorched landscape in a story of survival and hope.'
+                  - title: 'Dune'
+                    image: 'dune.jpg'
+                    type: 'BOOK'
+                    genre_category: 'Science Fiction'
+                    publisher: 'Chilton Books'
+                    author: 'Frank Herbert'
+                    isbn: '978-0441013593'
+                    description: 'Set in a distant future amidst a huge interstellar empire, the story explores the complex dynamics of politics, religion, and power.'
+                  - title: 'Beloved'
+                    image: 'beloved.jpg'
+                    type: 'BOOK'
+                    genre_category: 'Historical Fiction'
+                    publisher: 'Alfred A. Knopf'
+                    author: 'Toni Morrison'
+                    isbn: '978-1400033416'
+                    description: 'A former slave is haunted by the spirit of her dead daughter in this powerful novel about memory and trauma.'
+                  - title: 'Blue'
+                    image: 'blue.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'Folk'
+                    producer: 'Joni Mitchell'
+                    artist: 'Joni Mitchell'
+                    duration: 36
+                    description: 'A deeply personal and introspective album that has become a cornerstone of the singer-songwriter genre.'
+                  - title: 'Blonde'
+                    image: 'blonde.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'Alternative R&B'
+                    producer: 'Frank Ocean'
+                    artist: 'Frank Ocean'
+                    duration: 60
+                    description: 'A genre-defying album that tackles themes of love, identity, and self-discovery.'
+                  - title: 'Star Wars: Episode IV - A New Hope'
+                    image: 'star-wars-a-new-hope.jpg'
+                    type: 'FILM'
+                    genre_category: 'Science Fiction'
+                    director: 'George Lucas'
+                    duration: 121
+                    description: 'Luke Skywalker joins forces with a Jedi Knight, a cocky pilot, a Wookiee, and two droids to save the galaxy.'
+                  - title: 'Whiplash'
+                    image: 'whiplash.jpg'
+                    type: 'FILM'
+                    genre_category: 'Drama'
+                    director: 'Damien Chazelle'
+                    duration: 106
+                    description: 'A young drummer enrolls in a cutthroat music conservatory, where his dreams of greatness are mentored by an abusive instructor.'
+                  - title: 'Born to Run'
+                    image: 'born-to-run.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'Rock'
+                    producer: 'Jon Landau'
+                    artist: 'Bruce Springsteen'
+                    duration: 39
+                    description: 'A rock classic that defined Bruce Springsteen’s sound, featuring the anthemic title track.'
+                  - title: 'The Picture of Dorian Gray'
+                    image: 'picture-of-dorian-gray.jpg'
+                    type: 'BOOK'
+                    genre_category: 'Gothic'
+                    publisher: "Lippincott's Monthly Magazine"
+                    author: 'Oscar Wilde'
+                    isbn: '978-0141439570'
+                    description: 'A story about a man who remains youthful while his portrait ages, exploring themes of vanity and decadence.'
+                  - title: 'A Brief History of Time'
+                    image: 'brief-history-of-time.jpg'
+                    type: 'BOOK'
+                    genre_category: 'Non-Fiction'
+                    publisher: 'Bantam Books'
+                    author: 'Stephen Hawking'
+                    isbn: '978-0553380163'
+                    description: 'A groundbreaking book that explains the origins, structure, and future of the universe in accessible language.'
+                  - title: 'OK Computer'
+                    image: 'ok-computer.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'Alternative Rock'
+                    producer: 'Nigel Godrich'
+                    artist: 'Radiohead'
+                    duration: 53
+                    description: 'A critically acclaimed album that explores alienation in the modern world through complex arrangements and innovative soundscapes.'
+                  - title: "The Handmaid's Tale"
+                    image: 'handmaids-tale.jpg'
+                    type: 'BOOK'
+                    genre_category: 'Dystopian'
+                    publisher: 'McClelland & Stewart'
+                    author: 'Margaret Atwood'
+                    isbn: '978-0385490818'
+                    description: 'A novel set in a totalitarian society where women are stripped of their rights, focusing on the life of a "handmaid" named Offred.'
+                  - title: 'Purple Rain'
+                    image: 'purple-rain.jpg'
+                    type: 'MUSIC'
+                    genre_category: 'Pop'
+                    producer: 'Prince'
+                    artist: 'Prince'
+                    duration: 44
+                    description: 'A groundbreaking album that blends rock, R&B, and pop, featuring the iconic title track.'
+        required:
+                - products
+      responses:
+        '201':
+          description: Successfully created products.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: ID of the created product.
+                  message:
+                    type: string
+                    example: 'Product created successfully.'
+        '400':
+          description: Bad request due to validation errors.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Error while adding a product: Validation error message'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'An unexpected error occurred.'
 components:
   schemas:
     Product:
@@ -538,7 +918,7 @@ components:
         image:
           type: string
           description: 'URL or path to the cover image of the product.'
-          example: 'https://example.com/images/inception.jpg'
+          example: 'inception.jpg'
         type:
           type: string
           enum: [FILM, BOOK, MUSIC]

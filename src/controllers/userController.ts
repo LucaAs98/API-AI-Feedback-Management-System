@@ -11,6 +11,8 @@ import { validateRequestBody } from '../utils/helpers';
  * @returns {Promise<void>} - A promise that resolves to void.
  */
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+  console.log('Request: ', req.url);
+
   try {
     const users = await getUsers();
     res.json(users);
@@ -29,6 +31,8 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
  * @returns {Promise<void>} - A promise that resolves to void.
  */
 export const addUser = async (req: Request, res: Response): Promise<void> => {
+  console.log('Request: ', req.url);
+
   try {
     // Validate the request body
     const validationError = validateRequestBody(req, res, ['email', 'password', 'first_name', 'last_name']);

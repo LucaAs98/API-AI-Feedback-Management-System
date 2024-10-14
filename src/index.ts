@@ -15,32 +15,12 @@ import productRoutes from './routes/productRoutes';
 //Swagger
 import yaml from 'yamljs';
 import swaggerUi from 'swagger-ui-express';
+import utilsRoutes from './routes/utilsRoutes';
 
 dotenv.config(); // Load environment variables
 
 const app = express();
 const PORT = 8080;
-
-// Configure the client for database connection
-const client = new Client({
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT || '5432'),
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  ssl: { rejectUnauthorized: false },
-});
-
-// Connect to the database
-const connectToDatabase = async () => {
-  try {
-    await client.connect();
-    console.log('Connected to the database');
-  } catch (error) {
-    console.error('Database connection error', error);
-    process.exit(1); // Exit the process if connection fails
-  }
-};
 
 // CORS
 initCORS();
@@ -62,6 +42,7 @@ const server = http.createServer(app);
 app.use(userRoutes);
 app.use(feedbackRoutes);
 app.use(productRoutes);
+app.use(utilsRoutes);
 
 server.listen(PORT, () => {
   console.log(`- Server running on http://localhost:8080/ \n- API Documentation on http://localhost:8080/api-docs`);
@@ -107,4 +88,32 @@ function initCORS() {
   };
 
   app.use(cors(corsOptions));
+}
+
+function connectToDatabase() {
+  const config = {
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT),
+    database: process.env.DB_NAME,
+    ssl: {
+      rejectUnauthorized: true,
+      ca: process.env.DB_CERTIFICATE,
+    },
+  };
+
+  const client = new Client(config);
+
+  client.connect(function (err) {
+    if (err) throw err;
+    client.query('SELECT VERSION()', [], function (err, result) {
+      if (err) throw err;
+
+      console.log(result.rows[0].version);
+      client.end(function (err) {
+        if (err) throw err;
+      });
+    });
+  });
 }

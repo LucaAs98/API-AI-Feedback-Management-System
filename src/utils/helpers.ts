@@ -25,7 +25,7 @@ export function getPrismaError(error: any): string {
  * @param {string[]} requiredFieldNames - An array of field names that are required in the request body.
  * @returns {null|Response} - Returns null if validation passes; otherwise, sends a 422 response with a message.
  */
-export const validateRequestBody = (req: Request, res: Response, requiredFieldNames: string[]) => {
+export const validateRequestBody = (req: Request, res: Response, requiredFieldNames: string[]): null | Response => {
   // Filter out the fields that are missing from the request body
   const missingFields = requiredFieldNames.filter((field) => !req.body[field]);
 

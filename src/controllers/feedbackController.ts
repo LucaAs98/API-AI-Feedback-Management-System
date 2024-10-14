@@ -10,6 +10,8 @@ import { validateRequestBody } from '../utils/helpers';
  * @returns {Promise<void>} - A promise that resolves to void.
  */
 export const getAllFeedbacks = async (req: Request, res: Response): Promise<void> => {
+  console.log('Request: ', req.url);
+
   try {
     const feedbacks = await getFeedbacks();
     res.status(200).json(feedbacks);
@@ -28,6 +30,8 @@ export const getAllFeedbacks = async (req: Request, res: Response): Promise<void
  * @returns {Promise<void>} - A promise that resolves to void.
  */
 export const addFeedback = async (req: Request, res: Response): Promise<void> => {
+  console.log('Request: ', req.url);
+
   try {
     // Validate the request body
     const validationError = validateRequestBody(req, res, ['feedback_text', 'user_id']);

@@ -12,6 +12,8 @@ import { ProductType } from '@prisma/client';
  * @returns {Promise<void>} - A promise that resolves to void.
  */
 export const retrieveProductById = async (req: Request, res: Response): Promise<void> => {
+  console.log('Request: ', req.url);
+
   const productId = Number(req.params.id); // Extract product ID from the request parameters
 
   try {
@@ -41,6 +43,8 @@ export const retrieveProductById = async (req: Request, res: Response): Promise<
  * @returns {Promise<void>} - A promise that resolves to void.
  */
 export const retrieveProductsByType = async (req: Request, res: Response): Promise<void> => {
+  console.log('Request: ', req.url);
+
   const productType = req.params.type; // Extract product ID from the request parameters
 
   try {
@@ -62,6 +66,8 @@ export const retrieveProductsByType = async (req: Request, res: Response): Promi
  * @returns {Promise<void>} - A promise that resolves to void.
  */
 export const addProduct = async (req: Request, res: Response): Promise<void> => {
+  console.log('Request: ', req.url);
+
   try {
     // Validate the request body
     let fieldsToValidate = ['title', 'image', 'type', 'genre_category'];
@@ -85,7 +91,7 @@ export const addProduct = async (req: Request, res: Response): Promise<void> => 
  * @param {ProductType} type - The type of product for which to retrieve the validation fields.
  * @returns {string[]} An array of field names that should be validated for the specified product type. Returns an empty array if the product type is not recognized.
  */
-function getSpecificFieldsToValidate(type: ProductType): string[] {
+export function getSpecificFieldsToValidate(type: ProductType): string[] {
   switch (type) {
     case ProductType.FILM:
       return ['director', 'duration', 'description'];

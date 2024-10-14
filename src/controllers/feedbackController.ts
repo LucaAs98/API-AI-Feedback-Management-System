@@ -34,7 +34,7 @@ export const addFeedback = async (req: Request, res: Response): Promise<void> =>
 
   try {
     // Validate the request body
-    const validationError = validateRequestBody(req, res, ['feedback_text', 'user_id']);
+    const validationError = validateRequestBody(req, res, ['feedback_text', 'product_id', 'user_id']);
     if (validationError) return;
 
     //Analyze the feedback by keeping track of how long it takes

@@ -10,6 +10,10 @@ type AnalyzedFeedback = {
   mixed_score: number;
 };
 
+const Models = {
+  Llama3_2_1b: 'llama-3.2-1b-instruct',
+} as const;
+
 const prisma = new PrismaClient(); // Initialize Prisma Client
 
 /**
@@ -51,23 +55,24 @@ export const createFeedback = async (data: Prisma.feedbackCreateInput): Promise<
  * @returns A promise that resolves to the sentiment analysis result.
  */
 export const analyzeFeedback = async (feedback: string): Promise<AnalyzedFeedback> => {
-  const apiUrl = 'https://ducf7s8m8j.execute-api.us-east-1.amazonaws.com/develop/feedback';
+  const apiUrl = 'http://192.168.1.6:1234/v1/chat/completions';
 
   try {
+    const chatCompletionBody = createChatBody(feedback);
     // Send a POST request to the AWS Lambda with the feedback as the request body
-    const response = await axios.post(apiUrl, { feedback });
+    const response = await axios.post(apiUrl, chatCompletionBody);
 
     // Check if the response is successful and contains sentiment data
     if (response.status === 200 && response.data) {
-      const resultList = response.data.ResultList[0]; // Extract the sentiment result from the response data
+      const resultList = JSON.parse(response.data.choices[0].message.content); // Extract the sentiment result from the response data
 
       // Return the sentiment analysis result
       return {
         sentiment: resultList.Sentiment,
-        positive_score: resultList.SentimentScore.Positive,
-        negative_score: resultList.SentimentScore.Negative,
-        neutral_score: resultList.SentimentScore.Neutral,
-        mixed_score: resultList.SentimentScore.Mixed,
+        positive_score: resultList.Positive,
+        negative_score: resultList.Negative,
+        neutral_score: resultList.Neutral,
+        mixed_score: resultList.Mixed,
       };
     } else {
       // If response is not successful, throw an error
@@ -78,3 +83,31 @@ export const analyzeFeedback = async (feedback: string): Promise<AnalyzedFeedbac
     throw new Error('Error while analyzing the feedback.');
   }
 };
+
+function createChatBody(feedback: string) {
+  return {
+    model: Models.Llama3_2_1b,
+    messages: [
+      {
+        role: 'user',
+        content: `Analyze this sentence: "${feedback}". 
+
+        Complete and return the following JSON structure with the analysis results:
+        {
+          "Sentiment": "Positive" | "Negative" | "Neutral" | "Mixed",
+          "Positive": float (e.g., 0.85),
+          "Negative": float (e.g., 0.05),
+          "Neutral": float (e.g., 0.10),
+          "Mixed": float (e.g., 0.00)
+        }
+        
+        Make sure the response is a valid JSON. Do not include any explanations or formatting for markdown. 
+        
+        Return ONLY the JSON object, nothing else.`,
+      },
+    ],
+    temperature: 0.7,
+    max_tokens: -1,
+    stream: false,
+  };
+}

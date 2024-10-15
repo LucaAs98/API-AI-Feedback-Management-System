@@ -1,5 +1,5 @@
 import express from 'express';
-import { createBaseDB } from '../controllers/utilsController';
+import { createBaseDB } from '../controllers/utils.controller';
 
 const router = express.Router();
 

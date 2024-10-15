@@ -8,14 +8,14 @@ import { Client } from 'pg';
 import dotenv from 'dotenv';
 
 //Routes
-import userRoutes from './routes/userRoutes';
-import feedbackRoutes from './routes/feedbackRoutes';
-import productRoutes from './routes/productRoutes';
+import userRoutes from './routes/user.routes';
+import feedbackRoutes from './routes/feedback.routes';
+import productRoutes from './routes/product.routes';
 
 //Swagger
 import yaml from 'yamljs';
 import swaggerUi from 'swagger-ui-express';
-import utilsRoutes from './routes/utilsRoutes';
+import utilsRoutes from './routes/utils.routes';
 
 dotenv.config(); // Load environment variables
 

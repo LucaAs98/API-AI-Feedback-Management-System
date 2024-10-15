@@ -112,13 +112,13 @@ export function mapFinalProduct(product: any): (Product & (Partial<Film> | Parti
 
   // Determine the product type and merge specific attributes accordingly.
   switch (product.type as ProductType) {
-    case 'FILM':
+    case ProductType.FILM:
       finalProduct = { ...finalProduct, ...product.film } as FilmCreationInput;
       break;
-    case 'BOOK':
+    case ProductType.BOOK:
       finalProduct = { ...finalProduct, ...product.book } as BookCreationInput;
       break;
-    case 'MUSIC':
+    case ProductType.MUSIC:
       finalProduct = { ...finalProduct, ...product.music } as MusicCreationInput;
       break;
     default:
@@ -133,7 +133,7 @@ export function mapFinalProduct(product: any): (Product & (Partial<Film> | Parti
 /**
  * Converts a string representation of a product type to the ProductType enum.
  *
- * @param {string} productTypeString - The string representation of the product type (e.g., 'FILM', 'LIBRO', 'MUSICA').
+ * @param {string} productTypeString - The string representation of the product type (e.g., 'FILM', 'BOOK', 'MUSIC').
  * @returns {ProductType} - The corresponding ProductType enum value.
  * @throws {Error} - Throws an error if the string does not match a valid product type.
  */

@@ -1,6 +1,6 @@
 // src/controllers/productController.ts
 import { Request, Response } from 'express';
-import { createProduct } from '../services/productService';
+import { createProduct } from '../services/product.service';
 
 export const createBaseDB = async (req: Request, res: Response): Promise<void> => {
   console.log('Request: ', req.url);

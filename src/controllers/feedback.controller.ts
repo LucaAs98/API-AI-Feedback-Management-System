@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createFeedback, getFeedbacks, analyzeFeedback } from '../services/feedbackService';
+import { createFeedback, getFeedbacks, analyzeFeedback } from '../services/feedback.service';
 import { validateRequestBody } from '../utils/helpers';
 
 /**
@@ -39,14 +39,14 @@ export const addFeedback = async (req: Request, res: Response): Promise<void> =>
 
     //Analyze the feedback by keeping track of how long it takes
     const start = new Date().getTime();
-    const analyzedFeedback = await analyzeFeedback(req.body.feedback_text);
+    const feedbackScore = await analyzeFeedback(req.body.feedback_text);
     const end = new Date().getTime();
     const elapsedTime = end - start;
 
     // Create the feedback body, merging original request data with analyzed data and response time
     const createFeedbackBody = {
       ...req.body,
-      ...analyzedFeedback,
+      feedback_score: feedbackScore,
       response_time: elapsedTime,
     };
 
@@ -55,6 +55,6 @@ export const addFeedback = async (req: Request, res: Response): Promise<void> =>
 
     res.status(201).json(response);
   } catch (error) {
-    res.status(400).json({ message: `Error while adding a feedback: ${error.message}` });
+    res.status(400).json({ message: error.message });
   }
 };

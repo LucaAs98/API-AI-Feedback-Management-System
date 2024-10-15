@@ -1,6 +1,6 @@
 // src/controllers/userController.ts
 import { Request, Response } from 'express';
-import { getUsers, createUser } from '../services/userService';
+import { getUsers, createUser } from '../services/user.service';
 import { validateRequestBody } from '../utils/helpers';
 
 /**

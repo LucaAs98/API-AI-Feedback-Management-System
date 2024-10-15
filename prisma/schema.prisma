@@ -64,11 +64,7 @@ model feedback {
   feedback_text  String // The text of the feedback
   feedback_time  DateTime? @default(now()) @db.Timestamp(6) // Time the feedback was given
   response_time  Int? // Time taken to respond to the feedback
-  sentiment      String?   @db.VarChar(10) // Sentiment analysis result
-  positive_score Float? // Positive score from sentiment analysis
-  negative_score Float? // Negative score from sentiment analysis
-  neutral_score  Float? // Neutral score from sentiment analysis
-  mixed_score    Float? // Mixed score from sentiment analysis
+  feedback_score Int? // Score of the sentiment analysis on the feedback
   user           user      @relation(fields: [user_id], references: [id], onDelete: Cascade) // Relationship with user
   product        product   @relation(fields: [product_id], references: [id], onDelete: Cascade) // Relationship with product
 }

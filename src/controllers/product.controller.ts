@@ -1,6 +1,6 @@
 // src/controllers/productController.ts
 import { Request, Response } from 'express';
-import { createProduct, getProductById, getProductsByType } from '../services/productService';
+import { createProduct, getProductById, getProductsByType } from '../services/product.service';
 import { validateRequestBody } from '../utils/helpers';
 import { ProductType } from '@prisma/client';
 

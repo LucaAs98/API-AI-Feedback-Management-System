@@ -1,8 +1,4 @@
-{ "version": 2, 
-  "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
-  "build": {
-    "commands": [
-      "npx prisma generate && npm run vercel-build"
-    ]
-  }
+{ 
+  "version": 2, 
+  "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
 }

@@ -6,6 +6,7 @@ import compression from 'compression';
 import cors from 'cors';
 import { Client } from 'pg';
 import dotenv from 'dotenv';
+import path from 'path';
 
 //Routes
 import userRoutes from './routes/user.routes';
@@ -44,15 +45,23 @@ app.use(feedbackRoutes);
 app.use(productRoutes);
 app.use(utilsRoutes);
 
+app.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(__dirname, 'assets/favicon.ico'));
+});
+
+app.get<{}, string>('/', (req, res) => {
+  res.json('API Critic Hub is working!');
+});
+
 server.listen(PORT, () => {
   console.log(`- Server running on ${process.env.SERVER_URL} \n- API Documentation on ${process.env.SERVER_URL}/api-docs`);
 });
 
 export default app;
 /** Initializes Swagger documentation for the API. */
-function swaggerInit() {
+async function swaggerInit() {
   // Loads the OpenAPI specifications from a YAML file
-  const swaggerDocs = yaml.load('./src/swagger.yaml');
+  const swaggerDocs = yaml.load(process.cwd() + '/src/swagger.yaml');
 
   //Sets up the Swagger UI to serve the API documentation at the '/api-docs' route
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));

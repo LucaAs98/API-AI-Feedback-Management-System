@@ -45,9 +45,10 @@ app.use(productRoutes);
 app.use(utilsRoutes);
 
 server.listen(PORT, () => {
-  console.log(`- Server running on http://localhost:8080/ \n- API Documentation on http://localhost:8080/api-docs`);
+  console.log(`- Server running on ${process.env.SERVER_URL} \n- API Documentation on ${process.env.SERVER_URL}/api-docs`);
 });
 
+export default app;
 /** Initializes Swagger documentation for the API. */
 function swaggerInit() {
   // Loads the OpenAPI specifications from a YAML file

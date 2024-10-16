@@ -46,7 +46,7 @@ app.use(productRoutes);
 app.use(utilsRoutes);
 
 app.get('/favicon.ico', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src/assets/favicon.ico'));
+  res.sendFile(path.join(__dirname, 'assets/favicon.ico'));
 });
 
 app.get<{}, string>('/', (req, res) => {
@@ -61,7 +61,7 @@ export default app;
 /** Initializes Swagger documentation for the API. */
 async function swaggerInit() {
   // Loads the OpenAPI specifications from a YAML file
-  const swaggerDocs = yaml.load('src/swagger.yaml');
+  const swaggerDocs = yaml.load(path.join(__dirname, 'swagger.yaml'));
 
   //Sets up the Swagger UI to serve the API documentation at the '/api-docs' route
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));

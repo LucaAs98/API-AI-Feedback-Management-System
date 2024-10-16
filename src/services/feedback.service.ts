@@ -1,4 +1,4 @@
-import { feedback as Feedback, Prisma, PrismaClient } from '@prisma/client';
+import { feedback as Feedback, Prisma, PrismaClient } from '../../prisma/generated';
 import { getPrismaError } from '../utils/helpers';
 import axios from 'axios';
 

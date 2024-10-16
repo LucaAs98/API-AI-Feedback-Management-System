@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, product as Product, film as Film, book as Book, music as Music, ProductType } from '@prisma/client';
+import { Prisma, PrismaClient, product as Product, film as Film, book as Book, music as Music, ProductType } from '../../prisma/generated';
 import { getPrismaError } from '../utils/helpers';
 import {
   BookCreationInput,

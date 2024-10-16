@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import { createProduct, getProductById, getProductsByType } from '../services/product.service';
 import { validateRequestBody } from '../utils/helpers';
-import { ProductType } from '@prisma/client';
+import { ProductType } from '../../prisma/generated';
 
 /**
  * Retrieves a product by its ID.

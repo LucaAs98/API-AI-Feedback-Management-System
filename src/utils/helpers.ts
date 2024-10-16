@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'; // Assuming you're using Express
 import { errorMessages } from './prismaErrorCodes';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '../../prisma/generated';
 
 /**
  * Extracts and returns a user-friendly error message from a Prisma error.

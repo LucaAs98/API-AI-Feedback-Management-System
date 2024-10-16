@@ -112,7 +112,6 @@ function connectToDatabase() {
       ca: process.env.DB_CERTIFICATE,
     },
   };
-  console.log('🐢 ~ process.env:', process.env);
 
   const client = new Client(config);
 

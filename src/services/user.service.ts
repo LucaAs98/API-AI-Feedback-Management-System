@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, user as User } from '@prisma/client';
+import { Prisma, PrismaClient, user as User } from '../../prisma/generated';
 import { getPrismaError } from '../utils/helpers';
 import bcrypt from 'bcrypt';
 

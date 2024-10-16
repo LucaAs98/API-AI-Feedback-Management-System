@@ -1,6 +1,6 @@
 import { feedback as Feedback, Prisma, PrismaClient } from '@prisma/client';
 import { getPrismaError } from '../utils/helpers';
-import axios, { isAxiosError } from 'axios';
+import axios from 'axios';
 
 const MODEL_URL = 'https://api-inference.huggingface.co/models/nlptown/bert-base-multilingual-uncased-sentiment';
 
@@ -46,9 +46,13 @@ export const createFeedback = async (data: Prisma.feedbackCreateInput): Promise<
  */
 export const analyzeFeedback = async (feedback: string): Promise<number> => {
   try {
-    const response = await axios.post(MODEL_URL, JSON.stringify({ inputs: feedback }), {
-      headers: { Authorization: `Bearer ${process.env.HUGGING_FACE_TOKEN}`, 'Content-Type': 'application/json' },
-    });
+    const response = await axios.post(
+      MODEL_URL,
+      { inputs: feedback },
+      {
+        headers: { Authorization: `Bearer ${process.env.HUGGING_FACE_TOKEN}`, 'Content-Type': 'application/json' },
+      }
+    );
 
     // Extract the sentiment with the highest score.
     const result = response.data[0].reduce(
@@ -58,7 +62,9 @@ export const analyzeFeedback = async (feedback: string): Promise<number> => {
 
     return parseInt(result.label[0]);
   } catch (error) {
-    console.error('Error while analyzing the feedback:', error);
-    throw new Error('Error while analyzing the feedback.');
+    const errorMessage = 'Error while analyzing the feedback: ' + error.response?.data?.error;
+
+    console.error(errorMessage);
+    throw new Error(errorMessage);
   }
 };

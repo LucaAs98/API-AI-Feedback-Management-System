@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createFeedback, getFeedbacks, analyzeFeedback } from '../services/feedback.service';
+import { addFeedback, getFeedbacks, analyzeFeedback } from '../services/feedback.service';
 import { validateRequestBody } from '../utils/helpers';
 
 /**
@@ -29,7 +29,7 @@ export const getAllFeedbacks = async (req: Request, res: Response): Promise<void
  * @param {Response} res - The response object used to send the result of the feedback creation process.
  * @returns {Promise<void>} - A promise that resolves to void.
  */
-export const addFeedback = async (req: Request, res: Response): Promise<void> => {
+export const createFeedback = async (req: Request, res: Response): Promise<void> => {
   console.log('Request: ', req.url);
 
   try {
@@ -51,7 +51,7 @@ export const addFeedback = async (req: Request, res: Response): Promise<void> =>
     };
 
     // Create a new feedback entry in the database and send the response
-    const response = await createFeedback(createFeedbackBody);
+    const response = await addFeedback(createFeedbackBody);
 
     res.status(201).json(response);
   } catch (error) {

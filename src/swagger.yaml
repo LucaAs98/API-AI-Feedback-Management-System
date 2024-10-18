@@ -75,35 +75,20 @@ paths:
               properties:
                 user_id:
                   type: integer
+                  description: ID of the user providing the feedback.
+                  example: 1
+                product_id:
+                  type: integer
+                  description: ID of the product for which feedback is given.
                   example: 123
                 feedback_text:
                   type: string
-                  example: 'This is a new feedback message.'
-                sentiment:
-                  type: string
-                  enum: [POSITIVE, NEGATIVE, NEUTRAL, MIXED]
-                  nullable: true
-                  example: 'POSITIVE'
-                positive_score:
-                  type: number
-                  format: float
-                  nullable: true
-                  example: 0.9996839761734009
-                negative_score:
-                  type: number
-                  format: float
-                  nullable: true
-                  example: 0.00005056627560406923
-                neutral_score:
-                  type: number
-                  format: float
-                  nullable: true
-                  example: 0.000262411602307111
-                mixed_score:
-                  type: number
-                  format: float
-                  nullable: true
-                  example: 0.000003055851038880064
+                  description: The text content of the feedback.
+                  example: "Great product, very satisfied with the quality."
+              required:
+                - user_id
+                - product_id
+                - feedback_text
       responses:
         '201':
           description: Feedback created successfully
@@ -130,31 +115,9 @@ paths:
                     format: date-time
                     nullable: true
                     example: null
-                  sentiment:
-                    type: string
-                    enum: [POSITIVE, NEGATIVE, NEUTRAL, MIXED]
-                    nullable: true
-                    example: 'POSITIVE'
-                  positive_score:
-                    type: number
-                    format: float
-                    nullable: true
-                    example: 0.9996839761734009
-                  negative_score:
-                    type: number
-                    format: float
-                    nullable: true
-                    example: 0.00005056627560406923
-                  neutral_score:
-                    type: number
-                    format: float
-                    nullable: true
-                    example: 0.000262411602307111
-                  mixed_score:
-                    type: number
-                    format: float
-                    nullable: true
-                    example: 0.000003055851038880064
+                  feedback_score:
+                    type: integer
+                    example: 3
         '400':
           description: Bad request
         '500':
@@ -354,7 +317,56 @@ paths:
                   message:
                     type: string
                     example: An error occurred while retrieving the products.
-  /utils/create-base-db:
+  /statistic/{id}:
+    get:
+      summary: Retrieves the statistics of a specific product by its ID.
+      operationId: retrieveProductStatistics
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the product whose statistics are to be retrieved.
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Successful response containing product statistics.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  averageScore:
+                    type: number
+                    format: float
+                    description: The average score of the feedback for the product.
+                  significantSummary:
+                    type: string
+                    description: A meaningful summary of all feedback for the product.
+        '404':
+          description: Product not found. No statistics exist for the provided ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Product not found"
+        '500':
+          description: Internal server error. An error occurred while processing the request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "An error occurred while retrieving product statistics."
+      tags:
+        - Product Statistics
+  /utils/create-products-in-bulk:
     post:
       tags: [Utils]
       summary: Create new products in the database.
@@ -735,6 +747,64 @@ paths:
                   message:
                     type: string
                     example: 'An unexpected error occurred.'
+  /utils/create-feedbacks-in-bulk:
+    post:
+      tags: [Utils]
+      summary: Create new feedbacks in the database.
+      description: This endpoint allows creating new entries for feedbacks in the database.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                feedbacks:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Feedback'
+              example:
+                feedbacks:
+                  - user_id: 1
+                    product_id: 29
+                    feedback_text: "Interesting idea, but it drags on in some parts."
+        required:
+                - feedbacks
+      responses:
+        '201':
+          description: Successfully created feedbacks.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: ID of the created feedback.
+                  message:
+                    type: string
+                    example: 'Feedback created successfully.'
+        '400':
+          description: Bad request due to validation errors.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Error while adding a feedback: Validation error message'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'An unexpected error occurred.'
+
 components:
   schemas:
     Product:

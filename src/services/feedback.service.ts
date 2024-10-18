@@ -29,7 +29,7 @@ export const getFeedbacks = async (): Promise<Feedback[]> => {
  * @returns {Promise<Feedback>} A promise that resolves to the created feedback entry.
  * @throws {Error} Throws an error if the database query fails.
  */
-export const createFeedback = async (data: Prisma.feedbackCreateInput): Promise<Feedback> => {
+export const addFeedback = async (data: Prisma.feedbackCreateInput): Promise<Feedback> => {
   try {
     return await prisma.feedback.create({ data });
   } catch (error) {

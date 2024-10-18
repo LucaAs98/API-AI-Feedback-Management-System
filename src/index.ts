@@ -12,11 +12,12 @@ import path from 'path';
 import userRoutes from './routes/user.routes';
 import feedbackRoutes from './routes/feedback.routes';
 import productRoutes from './routes/product.routes';
+import utilsRoutes from './routes/utils.routes';
+import statisticRoutes from './routes/statistic.routes';
 
 //Swagger
 import yaml from 'yamljs';
 import swaggerUi from 'swagger-ui-express';
-import utilsRoutes from './routes/utils.routes';
 
 dotenv.config(); // Load environment variables
 
@@ -44,6 +45,7 @@ app.use(userRoutes);
 app.use(feedbackRoutes);
 app.use(productRoutes);
 app.use(utilsRoutes);
+app.use(statisticRoutes);
 
 app.get('/favicon.ico', (req, res) => {
   res.sendFile(path.join(__dirname, 'assets/favicon.ico'));

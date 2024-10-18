@@ -1,8 +1,9 @@
 import express from 'express';
-import { createBaseDB } from '../controllers/utils.controller';
+import { createFeedbacksInBulk, createProductsInBulk } from '../controllers/utils.controller';
 
 const router = express.Router();
 
-router.post('/utils/create-base-db', createBaseDB);
+router.post('/utils/create-products-in-bulk', createProductsInBulk);
+router.post('/utils/create-feedbacks-in-bulk', createFeedbacksInBulk);
 
 export default router;

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getAverageFeedbackScoreByProductId, ProductStatistics } from '../services/statistic.service';
+import { getAverageFeedbackScoreByProductId, getFeedbackScoresByProductId, ProductStatistics } from '../services/statistic.service';
 
 /**
  * Retrieves statistics for a product by its ID.
@@ -15,10 +15,12 @@ export const retrieveProductStatistics = async (req: Request, res: Response): Pr
 
   try {
     const statistics: ProductStatistics = {
+      scores: [],
       averageScore: 0,
       significantSummary: '',
     };
 
+    statistics.scores = await getFeedbackScoresByProductId(productId);
     statistics.averageScore = await getAverageFeedbackScoreByProductId(productId);
 
     if (statistics.averageScore === null) {
